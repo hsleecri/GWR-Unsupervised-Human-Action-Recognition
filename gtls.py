@@ -428,7 +428,7 @@ class bk_label_Dataset:
             self.vectors = normalize_data(self.vectors)
 
 class bk_no_label_Dataset:
-    """ Create an instance of Iris dataset
+    """ for dataset without any label in it
     """
 
     def __init__(self, file, normalize):
