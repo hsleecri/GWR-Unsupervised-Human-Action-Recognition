@@ -32,7 +32,7 @@ if __name__ == "__main__":
         # Create network
         my_net = NoLabelGammaGWR()
         # Initialize network with two neurons
-        my_net.init_network(ds=ds_gamma, random=False, num_context=1)
+        my_net.init_network(ds=ds_gamma, random=False, num_context=5)
 
         my_net.train_gammagwr(ds=ds_gamma, epochs=30,
                                 a_threshold=0.1, max_age=2289, beta=0.7, l_rates=[0.2, 0.001])
