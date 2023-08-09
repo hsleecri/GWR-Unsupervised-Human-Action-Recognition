@@ -53,9 +53,13 @@ def export_network_result(file_name, net, ds) -> None:
     df = pd.DataFrame(net.bmus_index)
     #print(df)
     df.to_csv(path_or_buf=file_name, index=False, header=False)
+
+    unique_values = np.unique(net.bmus_index)
+
     plt.figure(figsize=(20, 10))
     plt.xlabel('Number of frame')
     plt.ylabel('Number of cluster')
+    plt.yticks(unique_values)
     sns.scatterplot(net.bmus_index)
     plt.show()
 
@@ -158,90 +162,6 @@ def plot_network(net, edges, labels) -> None:
                                  'gray', alpha=.3)
     plt.show()
 
-
-def plot_gamma_network(net, edges, labels) -> None:
-    """ 2D plot
-    """
-    # Plot network
-    # This just plots the first two dimensions of the weight vectors.
-    # For better visualization, PCA over weight vectors must be performed.
-    #print(net.weights)
-    ccc = ['black', 'blue', 'red', 'green', 'yellow',
-           'cyan', 'magenta', '0.75', '0.15', '1']
-    plt.figure()
-    dim_net = True if len(net.weights[0].shape) < 2 else False
-    for ni in range(len(net.weights)):
-
-        if labels:
-            plindex = np.argmax(net.alabels[ni])
-            if dim_net:
-                plt.scatter(net.weights[ni][2], net.weights[ni]
-                            [3], color=ccc[plindex], alpha=.5)
-            else:
-                plt.scatter(net.weights[ni][0, 2], net.weights[ni]
-                            [0, 3], color=ccc[plindex], alpha=.5)
-        else:
-            if dim_net:
-                plt.scatter(net.weights[ni][2], net.weights[ni][3], alpha=.5)
-            else:
-                plt.scatter(net.weights[ni][0, 2],
-                            net.weights[ni][0, 3], alpha=.5)
-        if edges:
-            for nj in range(len(net.weights)):
-                if net.edges[ni, nj] > 0:
-                    if dim_net:
-                        plt.plot([net.weights[ni][2], net.weights[nj][2]],
-                                 [net.weights[ni][3], net.weights[nj][3]],
-                                 'gray', alpha=.3)
-                    else:
-                        plt.plot([net.weights[ni][0, 2], net.weights[nj][0, 2]],
-                                 [net.weights[ni][0, 3], net.weights[nj][0, 3]],
-                                 'gray', alpha=.3)
-    plt.show()
-
-
-def bk_frame_plot_network(weights, alabels, edges, edge, labels, iterations) -> None:
-    """ 2D plot
-    """
-    # Plot network
-    # This just plots the first two dimensions of the weight vectors.
-    # For better visualization, PCA over weight vectors must be performed.
-    ccc = ['black', 'blue', 'red', 'green', 'yellow',
-           'cyan', 'magenta', '0.75', '0.15', '1']
-    plt.figure()
-    plt.title("iterations = ", iterations)
-    plt.xlim([0, 1])      # X축의 범위: [xmin, xmax]
-    plt.ylim([0, 1])     # Y축의 범위: [ymin, ymax]
-    dim_net = True if len(weights[0].shape) < 2 else False
-    for ni in range(len(weights)):
-
-        if labels:
-            plindex = np.argmax(alabels[ni])
-            if dim_net:
-                plt.scatter(weights[ni][1], weights[ni][2],
-                            color=ccc[plindex], alpha=.5)
-            else:
-                plt.scatter(weights[ni][0, 1], weights[ni]
-                            [0, 2], color=ccc[plindex], alpha=.5)
-        else:
-            if dim_net:
-                plt.scatter(weights[ni][1], weights[ni][2], alpha=.5)
-            else:
-                plt.scatter(weights[ni][0, 1], weights[ni][0, 2], alpha=.5)
-        if edge:
-            for nj in range(len(weights)):
-                if edges[ni, nj] > 0:
-                    if dim_net:
-                        plt.plot([weights[ni][1], weights[nj][1]],
-                                 [weights[ni][2], weights[nj][2]],
-                                 'gray', alpha=.3)
-                    else:
-                        plt.plot([weights[ni][0, 1], weights[nj][0, 1]],
-                                 [weights[ni][0, 2], weights[nj][0, 2]],
-                                 'gray', alpha=.3)
-    plt.show()
-
-
 def bk_no_label_frame_plot_network_learning(weights, edges, edge, black, iterations, NN, learn_add_nodes, learn_update_BMU, learn_neighbors, learn_remove_edges, learn_remove_nodeWeights, learn_new_edges, AQE) -> None:
     learn_add_nodes = sorted(list(set(learn_add_nodes)))
     learn_update_BMU = sorted(list(set(learn_update_BMU)))
@@ -334,76 +254,6 @@ def bk_no_label_frame_plot_network_learning(weights, edges, edge, black, iterati
 
     plt.show()
 
-
-def bk_no_label_frame_plot_network(weights, edges, edge, black, iterations, NN) -> None:
-    """ 2D plot
-    """
-    # Plot network
-    # This just plots the first two dimensions of the weight vectors.
-    # For better visualization, PCA over weight vectors must be performed.
-    ccc = ['black', 'blue', 'red', 'green', 'yellow',
-           'cyan', 'magenta', '0.75', '0.15', '1']
-    plt.figure()
-    plt.title("(iterations: %s, NN: %s)" %
-              (iterations, NN))
-    plt.xlim([0, 1])      # X축의 범위: [xmin, xmax]
-    plt.ylim([0, 1])     # Y축의 범위: [ymin, ymax]
-    dim_net = True if len(weights[0].shape) < 2 else False
-    for ni in range(len(weights)):
-        if black:
-            if dim_net:
-                plt.scatter(weights[ni][0], weights[ni]
-                            [1], c='black', alpha=.5)
-            else:
-                plt.scatter(weights[ni][0, 0], weights[ni]
-                            [0, 1], c='black', alpha=.5)
-        else:
-            if dim_net:
-                plt.scatter(weights[ni][0], weights[ni][1], alpha=.5)
-            else:
-                plt.scatter(weights[ni][0, 0], weights[ni][0, 1], alpha=.5)
-
-        if edge:
-            for nj in range(len(weights)):
-                if edges[ni, nj] > 0:
-                    if dim_net:
-                        plt.plot([weights[ni][0], weights[nj][0]],
-                                 [weights[ni][1], weights[nj][1]],
-                                 'gray', alpha=.3)
-                    else:
-                        plt.plot([weights[ni][0, 0], weights[nj][0, 0]],
-                                 [weights[ni][0, 1], weights[nj][0, 1]],
-                                 'gray', alpha=.3)
-    plt.show()
-
-
-class IrisDataset:
-    """ Create an instance of Iris dataset
-    """
-
-    def __init__(self, file, normalize):
-        self.name = 'IRIS'
-        self.file = file
-        self.normalize = normalize
-        self.num_classes = 3
-
-        raw_data = load_file(self.file)
-
-        self.labels = raw_data[:, raw_data.shape[1]-1]
-        self.vectors = raw_data[:, 0:raw_data.shape[1]-1]
-
-        label_list = list()
-        for label in self.labels:
-            if label not in label_list:
-                label_list.append(label)
-        n_classes = len(label_list)
-
-        assert self.num_classes == n_classes, "Inconsistent number of classes"
-
-        if self.normalize:
-            self.vectors = normalize_data(self.vectors)
-
-
 class bk_label_Dataset:
     """ Create an instance of any label dataset
     """
@@ -445,10 +295,6 @@ class bk_no_label_Dataset:
 
         if self.normalize:
             self.vectors = normalize_data(self.vectors)
-
-# Explanations are added by Hyeonsu Lee
-
-
 
 class NoLabelGammaGWR:
     # Initialization
@@ -825,16 +671,13 @@ class NoLabelGammaGWR:
         if test_accuracy:
             self.test_accuracy = acc_counter / test_ds.vectors.shape[0]
 
-
-
-
 if __name__ == "__main__":
 
     # Import dataset from file
     data_flag = True
     # Import pickled network
     import_flag = False
-    # Train AGWR with imported dataset
+    # Train GWR with imported dataset
     train_flag = True
     # Compute classification accuracy
     test_flag = False
@@ -860,8 +703,8 @@ if __name__ == "__main__":
         # Initialize network with two neurons
         my_net.init_network(ds=ds_gamma, random=False, num_context=5)
 
-        my_net.train_gammagwr(ds=ds_gamma, epochs=30,
-                                a_threshold=0.1, max_age=2289, beta=0.7, l_rates=[0.2, 0.001])
+        my_net.train_gammagwr(ds=ds_gamma, epochs=1,
+                                a_threshold=0.3, max_age=100, beta=0.7, l_rates=[0.2, 0.001])
 
 
     if test_flag:
